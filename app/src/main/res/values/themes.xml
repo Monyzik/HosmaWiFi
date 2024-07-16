@@ -2,7 +2,7 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.HosmaWiFi" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:fillColor">@color/black</item>
     </style>
 
     <style name="Theme.HosmaWiFi" parent="Base.Theme.HosmaWiFi" />
