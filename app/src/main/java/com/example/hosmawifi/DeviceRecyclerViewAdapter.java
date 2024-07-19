@@ -1,7 +1,10 @@
 package com.example.hosmawifi;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.switchmaterial.SwitchMaterial;
@@ -125,7 +129,7 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             return progressView;
         }
 
-        public SwitchMaterial getDeviceSwitchMaterial() {
+        public SwitchCompat getDeviceSwitchMaterial() {
             return deviceSwitchMaterial;
         }
     }
@@ -214,9 +218,15 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                         if (isChecked) {
                             client.publishWith().topic(device.getPublishTopic()).payload(device.getMessageToTurnOn().getBytes()).qos(MqttQos.EXACTLY_ONCE).send();
                             teapotViewHolder.getDeviceImageView().setImageResource(device.getDeviceModeOnDrawable());
+                            SharedPreferences.Editor editor = activity.getSharedPreferences("save", MODE_PRIVATE).edit();
+                            editor.putBoolean(device.getDeviceName(), true);
+                            editor.apply();
                         } else {
                             client.publishWith().topic(device.getPublishTopic()).payload(device.getMessageToTurnOff().getBytes()).qos(MqttQos.EXACTLY_ONCE).send();
                             teapotViewHolder.getDeviceImageView().setImageResource(device.getDeviceModeOffDrawable());
+                            SharedPreferences.Editor editor = activity.getSharedPreferences("save", MODE_PRIVATE).edit();
+                            editor.putBoolean(device.getDeviceName(), false);
+                            editor.apply();
                         }
                     }
                 });
@@ -267,8 +277,15 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
                 deviceViewHolder.getDeviceNameTextView().setText(device.getDeviceName());
 
-                //добавить логику когда будут сохраняться состояния (for Andrew);
-                deviceViewHolder.getDeviceImageView().setImageResource(device.getDeviceModeOffDrawable());
+                SharedPreferences sharedPreferences = activity.getSharedPreferences("save", MODE_PRIVATE);
+                if (sharedPreferences.getBoolean(device.getDeviceName(), false)) {
+                    deviceViewHolder.getDeviceImageView().setImageResource(device.getDeviceModeOnDrawable());
+                    deviceViewHolder.getSwitchMaterial().setChecked(true);
+                } else {
+                    deviceViewHolder.getDeviceImageView().setImageResource(device.getDeviceModeOffDrawable());
+                    deviceViewHolder.getSwitchMaterial().setChecked(false);
+                }
+
 
                 deviceViewHolder.getSwitchMaterial().setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
@@ -276,9 +293,15 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                         if (isChecked) {
                             client.publishWith().topic(device.getPublishTopic()).payload(device.getMessageToTurnOn().getBytes()).qos(MqttQos.EXACTLY_ONCE).send();
                             deviceViewHolder.getDeviceImageView().setImageResource(device.getDeviceModeOnDrawable());
+                            SharedPreferences.Editor editor= activity.getSharedPreferences("save", MODE_PRIVATE).edit();
+                            editor.putBoolean(device.getDeviceName(), true);
+                            editor.apply();
                         } else {
                             client.publishWith().topic(device.getPublishTopic()).payload(device.getMessageToTurnOff().getBytes()).qos(MqttQos.EXACTLY_ONCE).send();
                             deviceViewHolder.getDeviceImageView().setImageResource(device.getDeviceModeOffDrawable());
+                            SharedPreferences.Editor editor = activity.getSharedPreferences("save", MODE_PRIVATE).edit();
+                            editor.putBoolean(device.getDeviceName(), false);
+                            editor.apply();
                         }
                     }
                 });
