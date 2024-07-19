@@ -1,6 +1,13 @@
 package com.example.hosmawifi;
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.renderscript.ScriptGroup;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +17,10 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,11 +37,7 @@ import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ConsoleFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class ConsoleFragment extends Fragment {
 
     final String serverUri = "mqtt.flespi.io";
@@ -62,6 +68,9 @@ public class ConsoleFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private BackgroundNotificationService mBoundService;
+
+
     public ConsoleFragment() {
     }
 
@@ -87,6 +96,8 @@ public class ConsoleFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        requireActivity().startService(new Intent(requireActivity(), BackgroundNotificationService.class));
         client.connect().whenComplete(new BiConsumer<Mqtt3ConnAck, Throwable>() {
             @Override
             public void accept(Mqtt3ConnAck mqtt3ConnAck, Throwable throwable) {
@@ -107,57 +118,44 @@ public class ConsoleFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        devices.add(new Device("Not light"));
-        devices.add(new Light("Light"));
+        if (ContextCompat.checkSelfPermission(requireActivity(), android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(requireActivity(), new String[]{android.Manifest.permission.POST_NOTIFICATIONS},101);
+        }
 
-        // При создании отдельного recycler view для датчиков, данный TextView необходимо удалить.
-        dataReceiver = view.findViewById(R.id.dataReceiver);
+        devices.add(new Device("testTopic", "1", "0", R.drawable.baseline_lightbulb_yellow, R.drawable.baseline_lightbulb, "Light"));
+        devices.add(new Device("receiver", R.drawable.baseline_home_24, "Smart Home"));
+        devices.add(new Device("testTopic", "1", "0", R.drawable.baseline_lightbulb_yellow, R.drawable.baseline_lightbulb, "Light"));
+        devices.add(new Device("receiver", R.drawable.baseline_home_24, "Smart Home"));
 
-//        client = new MQTTClient(requireContext(), serverUri, clientId);
-//        client.SetMqttEventHandler(this);
-//        client.Connect(username, password, this);
+        devices.add(new Device("teapotTopic", "TeapotSwitchTopic", "1", "0", R.drawable.teapot, R.drawable.teapot, "Teapot"));
 
+        devices.add(new Device("testTopic", "1", "0", R.drawable.baseline_lightbulb_yellow, R.drawable.baseline_lightbulb, "Light"));
+        devices.add(new Device("receiver", R.drawable.baseline_home_24, "Smart Home"));
+        devices.add(new Device("testTopic", "1", "0", R.drawable.baseline_lightbulb_yellow, R.drawable.baseline_lightbulb, "Light"));
+        devices.add(new Device("receiver", R.drawable.baseline_home_24, "Smart Home"));
 
         deviceRecyclerView = view.findViewById(R.id.deviceRecyclerView);
-        deviceRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        DeviceRecyclerViewAdapter deviceRecyclerViewAdapter = new DeviceRecyclerViewAdapter(devices, new DeviceRecyclerViewAdapter.OnItemSwitchListener() {
-            @Override
-            public void OnItemSwitch(Device device, boolean isChecked) {
-                if (isChecked) {
-                    Date d = new Date();
-//                    client.publishWith().topic("test").payload(String.valueOf(d.getTime()).getBytes()).qos(MqttQos.EXACTLY_ONCE).send();
-                    client.publishWith().topic("test").payload(device.getMessageToTurnOn().getBytes()).qos(MqttQos.EXACTLY_ONCE).send();
-                } else {
-                    client.publishWith().topic("test").payload(device.getMessageToTurnOff().getBytes()).qos(MqttQos.EXACTLY_ONCE).send();
-                }
-            }
-        });
-        deviceRecyclerView.setAdapter(deviceRecyclerViewAdapter);
 
-        client.toAsync().subscribeWith().topicFilter("receiver").qos(MqttQos.EXACTLY_ONCE).callback(new Consumer<Mqtt3Publish>() {
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(requireContext(), 2);
+        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
-            public void accept(Mqtt3Publish mqtt3Publish) {
-                String payload = new String(mqtt3Publish.getPayloadAsBytes());
-                System.out.println(payload);
-                Log.i("time", String.valueOf(new Date().getTime() - Long.parseLong(payload)));
-            }
-        }).send().whenComplete(new BiConsumer<Mqtt3SubAck, Throwable>() {
-            @Override
-            public void accept(Mqtt3SubAck mqtt3SubAck, Throwable throwable) {
-                if (throwable != null) {
-                    Log.e("mqtt", "can't subscribe to the topic");
-                } else {
-                    Log.i("mqtt", "subscribed");
+            public int getSpanSize(int position) {
+                switch (devices.get(position).getViewType()) {
+                    case 2: return 2;
+                    default: return 1;
                 }
             }
         });
+
+        deviceRecyclerView.setLayoutManager(gridLayoutManager);
+        DeviceRecyclerViewAdapter deviceRecyclerViewAdapter = new DeviceRecyclerViewAdapter(devices, client, requireActivity());
+        deviceRecyclerView.setAdapter(deviceRecyclerViewAdapter);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_console, container, false);
     }
 }

@@ -43,13 +43,19 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/deviceImageView" />
 
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/deviceSwitchMaterial"
+            <TextView
+                android:id="@+id/deviceReceivedData"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/smallest_margin"
+                android:layout_marginBottom="45dp"
+                android:maxLength="4"
+                android:text="100%"
+                android:textColor="?android:attr/fillColor"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toEndOf="@+id/deviceImageView" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

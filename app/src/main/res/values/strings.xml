@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">HosmaWiFi</string>
     <string name="devices">Devices</string>
+    <string name="smart_home">Smart home</string>
 </resources>

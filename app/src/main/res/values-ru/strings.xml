@@ -2,4 +2,5 @@
 <resources>
     <string name="app_name">HosmaWiFi</string>
     <string name="devices">Устройства</string>
+    <string name="smart_home">Умный дом</string>
 </resources>
