@@ -2,4 +2,7 @@
     <string name="app_name">HosmaWiFi</string>
     <string name="devices">Devices</string>
     <string name="smart_home">Smart home</string>
+    <string name="temperature">Temperature</string>
+    <string name="light">Light</string>
+    <string name="humidity">Humidity</string>
 </resources>

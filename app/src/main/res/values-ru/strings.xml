@@ -3,4 +3,7 @@
     <string name="app_name">HosmaWiFi</string>
     <string name="devices">Устройства</string>
     <string name="smart_home">Умный дом</string>
+    <string name="temperature">Температура</string>
+    <string name="light">Свет</string>
+    <string name="humidity">Влажность</string>
 </resources>

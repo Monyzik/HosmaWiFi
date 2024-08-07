@@ -122,10 +122,9 @@ public class ConsoleFragment extends Fragment {
             ActivityCompat.requestPermissions(requireActivity(), new String[]{android.Manifest.permission.POST_NOTIFICATIONS},101);
         }
 
-        devices.add(new Device("testTopic", "1", "0", R.drawable.baseline_lightbulb_yellow, R.drawable.baseline_lightbulb, "Light"));
-        devices.add(new Device("receiver", R.drawable.baseline_home_24, "Smart Home"));
-        devices.add(new Device("testTopic", "1", "0", R.drawable.baseline_lightbulb_yellow, R.drawable.baseline_lightbulb, "Light"));
-        devices.add(new Device("receiver", R.drawable.baseline_home_24, "Smart Home"));
+        devices.add(new Device("testTopic", "1", "0", R.drawable.baseline_lightbulb_yellow, R.drawable.baseline_lightbulb, getString(R.string.light)));
+        devices.add(new Device("thermometerReceiver", R.drawable.baseline_device_thermostat_24, getString(R.string.temperature)));
+        devices.add(new Device("receiver", R.drawable.baseline_water_drop_24, getString(R.string.humidity)));
 
         devices.add(new Device("teapotTopic", "TeapotSwitchTopic", "1", "0", R.drawable.teapot, R.drawable.teapot, "Teapot"));
 
@@ -140,10 +139,10 @@ public class ConsoleFragment extends Fragment {
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                switch (devices.get(position).getViewType()) {
-                    case 2: return 2;
-                    default: return 1;
+                if (devices.get(position).getViewType() == 2) {
+                    return 2;
                 }
+                return 1;
             }
         });
 
