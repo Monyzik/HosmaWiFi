@@ -44,8 +44,15 @@ public class ConsoleFragment extends Fragment {
 
     final int serverPort = 8883;
 
-    final String clientId = "AndroidClient";
-    final String subscriptionTopic = "test";
+    final String clientId = "Android";
+    final String testTopic = "test";
+    final String lightTopicFirst = "lightTopicFirst";
+    final String lightTopicSecond = "lightTopicSecond";
+    final String teapotTopic = "teapotTopic";
+    final String lightSensorTopic = "lightSensorTopic";
+    final String temperatureSensorTopic = "temperatureSensorTopic";
+    final String curtainsTopic = "curtainsTopic";
+//    final String curtainsTopic = "curtainsTopic";
 
     final String username = "MA4UHx3Oo99wTjJQCbgemm19cvRYvl3kzS4O3yU59B15d8jD9krAY7i2Ryh7O7lf";
 
@@ -122,16 +129,17 @@ public class ConsoleFragment extends Fragment {
             ActivityCompat.requestPermissions(requireActivity(), new String[]{android.Manifest.permission.POST_NOTIFICATIONS},101);
         }
 
-        devices.add(new Device("testTopic", "1", "0", R.drawable.baseline_lightbulb_yellow, R.drawable.baseline_lightbulb, getString(R.string.light)));
-        devices.add(new Device("thermometerReceiver", R.drawable.baseline_device_thermostat_24, getString(R.string.temperature)));
-        devices.add(new Device("receiver", R.drawable.baseline_water_drop_24, getString(R.string.humidity)));
+        devices.add(new Device(lightTopicFirst, "1", "0", R.drawable.baseline_lightbulb_yellow, R.drawable.baseline_lightbulb, "Light first"));
+        devices.add(new Device(lightSensorTopic, R.drawable.baseline_light_mode_24, "Light Sensor", 5.2f, "lm"));
+        devices.add(new Device(curtainsTopic, "1", "0", R.drawable.curtains, R.drawable.curtains, "Curtains"));
+        devices.add(new Device(temperatureSensorTopic, R.drawable.baseline_device_thermostat_24, "Smart Home", 1, ""));
 
-        devices.add(new Device("teapotTopic", "TeapotSwitchTopic", "1", "0", R.drawable.teapot, R.drawable.teapot, "Teapot"));
+        devices.add(new Device(teapotTopic, "TeapotSwitchTopic", "1", "0", R.drawable.teapot, R.drawable.teapot, "Teapot"));
 
+        devices.add(new Device(lightTopicSecond, "1", "0", R.drawable.baseline_lightbulb_yellow, R.drawable.baseline_lightbulb, "Light second"));
+        devices.add(new Device("receiver", R.drawable.baseline_water_drop_24, "Smart Home", 1, "%"));
         devices.add(new Device("testTopic", "1", "0", R.drawable.baseline_lightbulb_yellow, R.drawable.baseline_lightbulb, "Light"));
-        devices.add(new Device("receiver", R.drawable.baseline_home_24, "Smart Home"));
-        devices.add(new Device("testTopic", "1", "0", R.drawable.baseline_lightbulb_yellow, R.drawable.baseline_lightbulb, "Light"));
-        devices.add(new Device("receiver", R.drawable.baseline_home_24, "Smart Home"));
+        devices.add(new Device("receiver", R.drawable.baseline_home_24, "Smart Home", 1, ""));
 
         deviceRecyclerView = view.findViewById(R.id.deviceRecyclerView);
 

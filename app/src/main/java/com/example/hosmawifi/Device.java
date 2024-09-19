@@ -18,6 +18,8 @@ public class Device {
     private int deviceModeOffDrawable = R.drawable.baseline_question_mark;
 
     private String deviceName = null;
+    private float coefficient = 1;
+    private String measurement = "";
 
 
     public Device(String publishTopic, String messageToTurnOn, String messageToTurnOff, int deviceModeOnDrawable, int deviceModeOffDrawable, String deviceName) {
@@ -30,11 +32,13 @@ public class Device {
         this.deviceName = deviceName;
     }
 
-    public Device(String subscribeTopic, int deviceModeOffDrawable, String deviceName) {
+    public Device(String subscribeTopic, int deviceModeOffDrawable, String deviceName, float coefficient, String measurement) {
         this.viewType = 1;
         this.subscribeTopic = subscribeTopic;
         this.deviceModeOffDrawable = deviceModeOffDrawable;
         this.deviceName = deviceName;
+        this.coefficient = coefficient;
+        this.measurement = measurement;
     }
 
     public Device(String subscribeTopic, String publishTopic, String messageToTurnOn, String messageToTurnOff, int deviceModeOnDrawable, int deviceModeOffDrawable, String deviceName) {
@@ -82,5 +86,13 @@ public class Device {
 
     public String getDeviceName() {
         return deviceName;
+    }
+
+    public float getCoefficient() {
+        return coefficient;
+    }
+
+    public String getMeasurement() {
+        return measurement;
     }
 }

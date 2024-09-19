@@ -37,6 +37,7 @@ public class BackgroundNotificationService extends Service {
 
     final String clientId = "AndroidNotificationService";
     final String subscriptionTopic = "test";
+    final String devicesNotifications = "devicesNotifications";
 
     final String username = "MA4UHx3Oo99wTjJQCbgemm19cvRYvl3kzS4O3yU59B15d8jD9krAY7i2Ryh7O7lf";
 
@@ -113,7 +114,7 @@ public class BackgroundNotificationService extends Service {
                 }
             }
         });
-        client.toAsync().subscribeWith().topicFilter("devicesNotifications").qos(MqttQos.EXACTLY_ONCE).callback(new Consumer<Mqtt3Publish>() {
+        client.toAsync().subscribeWith().topicFilter(devicesNotifications).qos(MqttQos.EXACTLY_ONCE).callback(new Consumer<Mqtt3Publish>() {
             @Override
             public void accept(Mqtt3Publish mqtt3Publish) {
                 String text = new String(mqtt3Publish.getPayloadAsBytes());

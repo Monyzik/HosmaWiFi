@@ -6,10 +6,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -188,7 +190,7 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                         activity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                sensorViewHolder.getDeviceReceivedData().setText(text);
+                                sensorViewHolder.getDeviceReceivedData().setText(((int)(Integer.parseInt(text) * device.getCoefficient())) + "Лм");
                             }
                         });
                     }
@@ -202,6 +204,11 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                         }
                     }
                 });
+                int screenWidth = getScreenWidth(activity);
+                holder.itemView.getLayoutParams().width = (int) (screenWidth/ 2.2f);
+                ((SensorViewHolder) holder).getDeviceImageView().getLayoutParams().width = (int) (screenWidth/ 6);
+                ((SensorViewHolder) holder).deviceNameTextView.setTextSize((int) (screenWidth / 80));
+                ((SensorViewHolder) holder).deviceReceivedData.setTextSize((int) (screenWidth / 70));
 
 
                 break;
@@ -270,6 +277,9 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                         }
                     }
                 });
+
+                ((TeapotViewHolder) holder).getDeviceImageView().getLayoutParams().width = (int) (getScreenWidth(activity)/ 2.5f);
+
                 break;
             default:
                 assert holder instanceof DeviceViewHolder;
@@ -306,6 +316,9 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                     }
                 });
 
+                holder.itemView.getLayoutParams().width = (int) (getScreenWidth(activity)/ 2.2f);
+                ((DeviceViewHolder) holder).getDeviceImageView().getLayoutParams().width = (int) (getScreenWidth(activity)/ 6);
+
                 break;
         }
     }
@@ -314,5 +327,12 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     @Override
     public int getItemCount() {
         return devices.size();
+    }
+
+    public static int getScreenWidth(Context context) {
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics dm = new DisplayMetrics();
+        wm.getDefaultDisplay().getMetrics(dm);
+        return dm.widthPixels;
     }
 }
